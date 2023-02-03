@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 anyhow = "1.0.68"
 bitstream-io = "1.6.0"
-futuresdr = { version = "0.0.27", features = ["soapy"] }
+#futuresdr = { version = "0.0.27", features = ["soapy"] }
+futuresdr = { git = "https://github.com/bastibl/FutureSDR", branch = "message_finish", version = "0.0.27", features = ["soapy"] }
 soapysdr = "0.3.2"
 tun-tap = "0.1.3"

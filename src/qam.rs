@@ -22,7 +22,7 @@ impl Qam {
         Block::new(
             BlockMetaBuilder::new("Tap").build(),
             StreamIoBuilder::new()
-                .add_output("out", std::mem::size_of::<Complex32>())
+                .add_output::<Complex32>("out")
                 .build(),
             MessageIoBuilder::new()
                 .add_input("in", Self::input_handler)
@@ -83,9 +83,9 @@ impl Qam {
 impl Kernel for Qam {
     async fn work(
         &mut self,
-        _io: &mut WorkIo,
+        io: &mut WorkIo,
         sio: &mut StreamIo,
-        _mio: &mut MessageIo<Self>,
+        mio: &mut MessageIo<Self>,
         _b: &mut BlockMeta,
     ) -> Result<()> {
         println!("working");
@@ -108,7 +108,10 @@ impl Kernel for Qam {
             *v = Complex32::new(0.0, 0.0);
         }
 
-        output.produce(out_buf.len());
+        if self.txing_pkt.is_none() && self.pkt_queue.is_empty() && mio.input(0).finished() {
+            io.finished = true;
+        }
+
         Ok(())
     }
 }
